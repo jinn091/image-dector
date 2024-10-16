@@ -42,13 +42,18 @@ function App() {
   };
 
   const preditImage = async () => {
-    const classifier = await ml5.imageClassifier("MobileNet");
+    try {
+      const classifier = await ml5.imageClassifier("MobileNet");
+      console.log("Classifier loaded successfully:", classifier);
+      // Proceed with using the classifier
+      const image = document.getElementById("image");
 
-    const image = document.getElementById("image");
-
-    classifier.predict(image, (err, result) => {
-      setImageResult(result);
-    });
+      classifier.predict(image, (err, result) => {
+        setImageResult(result);
+      });
+    } catch (error) {
+      console.error("Error loading the classifier:", error);
+    }
   };
 
   return (
@@ -81,9 +86,15 @@ function App() {
                   <div className="image-result">
                     {imageResult &&
                       imageResult.map((result) => (
-                        <div key={result.probability} className="predict-result">
+                        <div
+                          key={result.probability}
+                          className="predict-result"
+                        >
                           <p>Predict Name : {result.className}</p>
-                          <p>Probability : {(result.probability * 100).toFixed(2)} % </p>
+                          <p>
+                            Probability :{" "}
+                            {(result.probability * 100).toFixed(2)} %{" "}
+                          </p>
                         </div>
                       ))}
                   </div>
